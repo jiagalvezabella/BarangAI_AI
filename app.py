@@ -108,9 +108,9 @@ intents = {
     },
 }
 
-# ============================================================
+
 # SVM INTENT CLASSIFIER - Train on startup
-# ============================================================
+
 print("Training SVM Intent Classifier...")
 X_train = []
 y_train = []
@@ -129,9 +129,9 @@ svm_classifier = SVC(kernel='rbf', probability=True)
 svm_classifier.fit(X_train, y_encoded)
 print("SVM Classifier trained successfully!")
 
-# ============================================================
+
 # RANDOM FOREST SKILL LEVEL CLASSIFIER
-# ============================================================
+
 print("Training Random Forest Skill Level Classifier...")
 
 skill_data = {
@@ -157,17 +157,17 @@ rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
 rf_classifier.fit(X_skill, y_skill_encoded)
 print("Random Forest Classifier trained successfully!")
 
-# ============================================================
+
 # K-MEANS PATTERN DETECTION
-# ============================================================
+
 print("Training K-Means Pattern Detection...")
 kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
 kmeans.fit(X_train)
 print("K-Means trained successfully!")
 
-# ============================================================
+
 # RECOMMENDATION SYSTEM
-# ============================================================
+
 recommendations = {
     "basic": [
         "Try learning how to save files (Ctrl+S)",
@@ -193,17 +193,17 @@ def get_recommendation(skill_level: str) -> str:
     recs = recommendations.get(skill_level, recommendations["basic"])
     return recs[np.random.randint(0, len(recs))]
 
-# ============================================================
+
 # TOKENIZATION
-# ============================================================
+ 
 def tokenize(text: str) -> List[str]:
     tokens = text.lower().strip().split()
     tokens = [t for t in tokens if len(t) > 1]
     return tokens
 
-# ============================================================
+ 
 # NAMED ENTITY RECOGNITION (NER)
-# ============================================================
+ 
 digital_tools = {
     "microsoft word": "ms_word",
     "ms word": "ms_word",
@@ -228,38 +228,38 @@ def extract_entities(text: str) -> Optional[str]:
             return intent
     return None
 
-# ============================================================
+
 # MAIN RESPONSE FUNCTION
-# ============================================================
+
 def get_response(user_input: str, session_id: str):
-    # Step 1: Tokenize
+    # Tokenize
     tokens = tokenize(user_input)
 
-    # Step 2: NER - check if specific tool mentioned
+    # NER - check if specific tool mentioned
     ner_intent = extract_entities(user_input)
 
-    # Step 3: SVM Intent Classification
+    # SVM Intent Classification
     user_embedding = model.encode(user_input)
     svm_probs = svm_classifier.predict_proba([user_embedding])[0]
     svm_confidence = float(np.max(svm_probs))
     svm_intent_idx = np.argmax(svm_probs)
     svm_intent = label_encoder.inverse_transform([svm_intent_idx])[0]
 
-    # Step 4: Combine NER + SVM (NER takes priority if found)
+    # Combine NER + SVM (NER takes priority if found)
     final_intent = ner_intent if ner_intent else svm_intent
 
-    # Step 5: Random Forest Skill Level Detection
+    # Random Forest Skill Level Detection
     skill_probs = rf_classifier.predict_proba([user_embedding])[0]
     skill_idx = np.argmax(skill_probs)
     skill_level = skill_encoder.inverse_transform([skill_idx])[0]
 
-    # Step 6: K-Means Pattern Detection
+    # K-Means Pattern Detection
     cluster = int(kmeans.predict([user_embedding])[0])
 
-    # Step 7: Get recommendation
+    # Get recommendation
     recommendation = get_recommendation(skill_level)
 
-    # Step 8: Store in session
+    # Store in session
     if session_id not in sessions:
         sessions[session_id] = []
 
@@ -282,9 +282,9 @@ def get_response(user_input: str, session_id: str):
 
     return response, final_intent, svm_confidence, skill_level, recommendation
 
-# ============================================================
+
 # API ENDPOINTS
-# ============================================================
+
 class ChatRequest(BaseModel):
     message: str
     session_id: str = None
