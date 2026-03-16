@@ -29,84 +29,80 @@ sessions: Dict[str, List[Dict]] = {}
 # User skill profiles
 user_profiles: Dict[str, Dict] = {}
 
-# Intents in English and Cebuano/Bisaya
+# Intents specific to Barangay Officials' Digital Literacy tasks (English and Cebuano/Bisaya)
 intents = {
     "greet": {
-        "examples": ["hello", "hi", "good morning", "kamusta", "maayong buntag", "maayong hapon", "maayong gabii", "hey"],
-        "response": "Hello! How can I help you today? / Kamusta! Unsaon nako pagtabang kanimo?",
+        "examples": ["hello", "hi", "good morning", "kamusta", "maayong buntag", "maayong hapon", "maayong gabii", "hey barangai"],
+        "response": "Maayong adlaw! I am BarangAI, your digital assistant. I can help you with MS Word (Clearances, Certificates), MS Excel (Liquidations, Budget), Emails, and Printing. Unsaon nako pagtabang kanimo karon?",
         "difficulty": "basic"
     },
     "basic_computer": {
-        "examples": ["how to turn on computer", "how to restart", "unsaon pag-on sa computer", "unsaon pag-restart", "how to shut down", "unsaon pag-off sa computer", "computer not working"],
-        "response": "To turn on your computer, press the power button. To restart, click Start > Restart. To shut down, click Start > Shut Down. / Aron i-on ang computer, pindota ang power button. Aron i-restart, i-click ang Start > Restart. Aron i-off, i-click ang Start > Shut Down.",
+        "examples": ["how to turn on computer", "how to restart", "unsaon pag-on sa computer", "unsaon pag-restart", "how to shut down", "unsaon pag-off sa computer", "nag hang ang computer"],
+        "response": "To turn on, press the power button. If the computer freezes (nag-hang), press Ctrl+Alt+Delete or hold the power button to restart. / Kung nag-hang ang computer, pindota ang Ctrl+Alt+Delete o hupti ang power button aron ma-restart.",
         "difficulty": "basic"
     },
-    "save_file": {
-        "examples": ["how to save file", "unsaon pagluwas sa file", "how to save document", "save file help", "unsaon pag save", "dili ma save ang file"],
-        "response": "To save a file, press Ctrl+S or click File > Save. To save as a new file, press Ctrl+Shift+S or click File > Save As. / Aron magluwas sa file, pindota ang Ctrl+S o i-click ang File > Save.",
+    "save_document": {
+        "examples": ["how to save file", "unsaon pag save sa clearance", "how to save document", "save indigency file", "unsaon pagluwas sa file", "dili ma save ang file"],
+        "response": "Always save official documents! Press Ctrl+S or click File > Save. To save a new version of a clearance, use File > Save As. / Kanunay i-save ang mga dokumento sa barangay! Pindota ang Ctrl+S o i-click ang File > Save.",
         "difficulty": "basic"
     },
-    "ms_word": {
-        "examples": ["how to use word", "paano gamitin ang word", "unsaon paggamit sa word", "microsoft word help", "word document", "how to format document", "word tutorial"],
-        "response": "I can help you with Microsoft Word! You can create documents, format text, insert tables and images. What specific help do you need? / Makatabang ko sa Microsoft Word! Unsay imong gikinahanglan?",
-        "difficulty": "basic"
+    "ms_word_clearance": {
+        "examples": ["how to make barangay clearance", "unsaon paghimo ug barangay clearance sa word", "certificate of indigency", "unsaon pag buhat og certificate", "format clearance", "business permit word"],
+        "response": "To make a Barangay Clearance/Indigency in Word: Open a blank document, center the alignment (Ctrl+E) for the Barangay Header, and use standard font like Arial or Times New Roman size 12. / Aron maghimo ug clearance: Pag-abli ug blangko nga dokumento, i-center (Ctrl+E) ang header sa barangay.",
+        "difficulty": "intermediate"
     },
-    "ms_word_table": {
-        "examples": ["how to insert table in word", "unsaon pagsal-ot ug table sa word", "add table word", "table in document", "unsaon paghimo ug table"],
-        "response": "To insert a table in Word: Click Insert > Table > select rows and columns. / Aron magsal-ot ug table sa Word: I-click ang Insert > Table > pilia ang gidaghanon sa rows ug columns.",
+    "ms_word_table_blotter": {
+        "examples": ["how to insert table in word", "unsaon pagsal-ot ug table sa word", "unsaon pag buhat og table sa word", "table for blotter report", "add table for attendance", "unsaon paghimo ug table"],
+        "response": "For blotter logs or attendance sheets: Click Insert > Table > select the number of columns and rows you need for the report. / Aron maghimo ug table para sa blotter o attendance: I-click ang Insert > Table > pilia ang gidaghanon sa rows ug columns.",
         "difficulty": "intermediate"
     },
     "ms_word_format": {
-        "examples": ["how to change font", "unsaon pagbag-o sa font", "how to bold text", "unsaon pag bold", "how to change font size", "text formatting word"],
-        "response": "To format text in Word: Select the text first, then use the toolbar to change font, size, bold (Ctrl+B), italic (Ctrl+I), or underline (Ctrl+U). / Aron mag-format ug teksto sa Word: Pilion una ang teksto, unya gamiton ang toolbar.",
+        "examples": ["how to bold name in certificate", "unsaon pag bold", "change font size clearance", "how to change font", "unsaon pagbag-o sa font", "underline text"],
+        "response": "To format names on certificates: Select the text, press Ctrl+B to make it Bold, Ctrl+U to Underline, or use the top menu to change font size. / Aron mag-format ug pangalan sa sertipiko: Pilia ang teksto, pindota ang Ctrl+B para mo-Bold, o Ctrl+U para Underline.",
         "difficulty": "intermediate"
     },
-    "ms_excel": {
-        "examples": ["how to use excel", "paano gamitin ang excel", "unsaon paggamit sa excel", "spreadsheet help", "excel help", "excel tutorial"],
-        "response": "I can help you with Microsoft Excel! Excel is used for spreadsheets, calculations, and data management. / Makatabang ko sa Microsoft Excel! Ang Excel gamiton sa spreadsheets, kalkulasyon, ug pagdumala sa datos.",
-        "difficulty": "basic"
-    },
-    "ms_excel_formula": {
-        "examples": ["how to use formula in excel", "unsaon paggamit sa formula sa excel", "sum formula", "excel calculation", "unsaon pag calculate sa excel", "excel sum", "average formula"],
-        "response": "To use formulas in Excel: Start with = sign. Common formulas: =SUM(A1:A5) to add, =AVERAGE(A1:A5) for average. / Aron mogamit ug formula sa Excel: Sugdi sa = sign. =SUM(A1:A5) aron magdugang, =AVERAGE(A1:A5) alang sa average.",
+    "ms_excel_liquidation": {
+        "examples": ["how to use excel for budget", "unsaon pag compute sa budget sa excel", "financial liquidation excel", "how to sum in excel", "unsaon pag total sa excel", "excel formula for expenses"],
+        "response": "For barangay financial liquidations, use the AutoSum tool. Click the empty cell below your expenses, type =SUM(, select the numbers, and press Enter. / Para sa liquidation sa barangay, i-type ang =SUM(, pilia ang mga kantidad, ug pindota ang Enter aron makuha ang total.",
         "difficulty": "intermediate"
     },
-    "ms_excel_chart": {
-        "examples": ["how to create chart in excel", "unsaon paghimo ug chart sa excel", "graph excel", "chart excel", "data visualization excel"],
-        "response": "To create a chart in Excel: Select your data, click Insert > Chart, choose chart type (bar, line, pie). / Aron maghimo ug chart sa Excel: Pilion ang imong datos, i-click ang Insert > Chart.",
+    "ms_excel_table_inventory": {
+        "examples": ["how to insert table in excel", "unsaon pagbuhat ug table sa excel", "unsaon pag buhat og table sa excel", "inventory of barangay assets", "create table in spreadsheet", "excel format table"],
+        "response": "To make an inventory of barangay assets in Excel: Highlight your typed data, click Insert > Table, and make sure 'My table has headers' is checked. / Aron maghimo ug inventory table: Pilia ang imong datos, i-click ang Insert > Table, ug i-check ang 'My table has headers'.",
+        "difficulty": "intermediate"
+    },
+    "ms_excel_chart_demographics": {
+        "examples": ["how to create chart in excel", "unsaon paghimo ug chart sa excel", "graph for population", "chart for barangay demographics", "pie chart excel"],
+        "response": "To visualize barangay population or demographics: Select your data table, click Insert > Chart, and choose a Pie Chart or Bar Graph. / Aron maghimo ug chart para sa populasyon: Pilia ang datos, i-click ang Insert > Chart.",
         "difficulty": "advanced"
     },
-    "email": {
-        "examples": ["how to send email", "paano mag padala ng email", "unsaon pag padala ug email", "email help", "compose email", "how to attach file in email"],
-        "response": "To send an email: Open your email app > Click Compose > Enter recipient email > Add subject > Write message > Click Send. / Aron magpadala ug email: Ablihi ang email app > I-click ang Compose > Isulod ang email sa tigdawat > I-click ang Send.",
-        "difficulty": "basic"
-    },
-    "internet": {
-        "examples": ["how to search online", "unsaon pagpangita online", "how to use google", "unsaon paggamit sa google", "internet help", "how to browse internet"],
-        "response": "To search online: Open your browser > Go to google.com > Type your search query > Press Enter. / Aron mangita online: Ablihi ang imong browser > Adto sa google.com > I-type ang imong pangutana > Pindota ang Enter.",
-        "difficulty": "basic"
-    },
-    "video_call": {
-        "examples": ["how to use zoom", "unsaon paggamit sa zoom", "google meet help", "video call help", "online meeting", "unsaon pagsalmot sa zoom meeting"],
-        "response": "To join a Zoom meeting: Click the meeting link or open Zoom > Enter Meeting ID > Click Join. For Google Meet: Click the meeting link > Click Join Now. / Aron mosalmot sa Zoom: I-click ang meeting link > Isulod ang Meeting ID > I-click ang Join.",
+    "email_dilg_city": {
+        "examples": ["how to send email to dilg", "unsaon pag padala ug email", "send report to city hall email", "attach file to email", "unsaon pag attach ug file", "compose email"],
+        "response": "To send a report via Email: Click Compose, type the official email address (e.g., DILG or City Hall), add a Subject, click the Paperclip icon to attach your Word/Excel file, and click Send. / Aron magpadala ug report: I-click ang Compose, ibutang ang email, i-click ang Paperclip icon aron i-attach ang file, ug i-click ang Send.",
         "difficulty": "intermediate"
     },
-    "password": {
-        "examples": ["how to change password", "unsaon pagbag-o sa password", "forgot password", "nakalimtan ang password", "password help"],
-        "response": "To change your password: Go to Settings > Account > Change Password. Make sure your password is strong with letters, numbers, and symbols. / Aron mabag-o ang password: Adto sa Settings > Account > Change Password.",
+    "internet_search_memos": {
+        "examples": ["how to search online", "unsaon pagpangita online", "search dilg memo", "find official guidelines google", "how to use google", "unsaon pag search sa memo"],
+        "response": "To search for official memos or guidelines: Open Google Chrome, type your keywords (e.g., 'DILG memorandum circular 2026') in the search bar, and press Enter. / Aron mangita ug memo: Ablihi ang Google, i-type ang imong gipangita sa search bar, ug pindota ang Enter.",
         "difficulty": "basic"
     },
-    "print": {
-        "examples": ["how to print document", "unsaon pag-print sa dokumento", "print help", "printer not working", "unsaon paggamit sa printer"],
-        "response": "To print a document: Press Ctrl+P or click File > Print. Select your printer and click Print. / Aron mag-print: Pindota ang Ctrl+P o i-click ang File > Print. Pilia ang imong printer unya i-click ang Print.",
+    "video_call_seminar": {
+        "examples": ["how to use zoom", "unsaon paggamit sa zoom", "join dilg online meeting", "google meet help", "unsaon pagsalmot sa zoom meeting", "online seminar video call"],
+        "response": "To join an online DILG seminar or meeting: Click the Zoom/Google Meet link provided in your email or messenger, enter your name (e.g., Brgy. Tisa - Secretary), and click Join. / Aron mosalmot sa online meeting: I-click ang link, isulod ang imong ngalan, ug i-click ang Join.",
+        "difficulty": "intermediate"
+    },
+    "password_security": {
+        "examples": ["how to change password", "unsaon pagbag-o sa password", "forgot password email", "nakalimtan ang password sa portal", "secure barangay account"],
+        "response": "For security, barangay accounts should have strong passwords! Go to Settings > Security > Change Password. Use a mix of letters, numbers, and symbols. / Alang sa seguridad, adto sa Settings > Security > Change Password. Paggamit ug sagol nga letra ug numero.",
         "difficulty": "basic"
     },
-    "goodbye": {
-        "examples": ["bye", "goodbye", "thank you", "salamat", "ok thanks", "paalam", "daghang salamat"],
-        "response": "Goodbye! Feel free to ask again anytime! / Paalam! Ayaw kahadlok pangutana bisan kanus-a!",
+    "print_certificate": {
+        "examples": ["how to print document", "unsaon pag-print sa clearance", "unsaon pag print sa blotter", "printer not working", "print certificate of indigency", "print setup"],
+        "response": "To print a clearance or certificate: Press Ctrl+P or click File > Print. Make sure the correct barangay printer is selected and the paper size matches (A4 or Letter) before clicking Print. / Aron mag-print ug clearance: Pindota ang Ctrl+P. Siguruha nga sakto ang printer ug size sa papel una i-click ang Print.",
         "difficulty": "basic"
-    },
+    }
 }
+
 
 
 # SVM INTENT CLASSIFIER - Train on startup
@@ -162,7 +158,7 @@ print("Random Forest Classifier trained successfully!")
 
 print("Training K-Means Pattern Detection...")
 kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
-kmeans.fit(X_train)
+kmeans.fit(X_train.astype(np.float64))
 print("K-Means trained successfully!")
 
 
@@ -240,30 +236,40 @@ def get_response(user_input: str, session_id: str):
 
     # SVM Intent Classification
     user_embedding = model.encode(user_input)
-    svm_probs = svm_classifier.predict_proba([user_embedding])[0]
+    
+    # 1. FIX K-MEANS: Create a strict 2D float64 numpy array right away
+    user_embedding_2d = np.array([user_embedding], dtype=np.float64)
+
+    svm_probs = svm_classifier.predict_proba(user_embedding_2d)[0]
     svm_confidence = float(np.max(svm_probs))
     svm_intent_idx = np.argmax(svm_probs)
-    svm_intent = label_encoder.inverse_transform([svm_intent_idx])[0]
+    
+    # 2. FIX PYDANTIC: Wrap outputs in str()
+    svm_intent = str(label_encoder.inverse_transform([svm_intent_idx])[0])
 
-    # Combine NER + SVM (NER takes priority if found)
-    final_intent = ner_intent if ner_intent else svm_intent
+    # Combine NER + SVM (SVM takes priority since it understands context!)
+    if svm_confidence > 0.1:
+        final_intent = str(svm_intent)
+    else:
+        final_intent = str(ner_intent if ner_intent else "unknown")
 
     # Random Forest Skill Level Detection
-    skill_probs = rf_classifier.predict_proba([user_embedding])[0]
+    skill_probs = rf_classifier.predict_proba(user_embedding_2d)[0]
     skill_idx = np.argmax(skill_probs)
-    skill_level = skill_encoder.inverse_transform([skill_idx])[0]
+    
+    # FIX PYDANTIC: Wrap in str()
+    skill_level = str(skill_encoder.inverse_transform([skill_idx])[0])
 
     # K-Means Pattern Detection
-    cluster = int(kmeans.predict([user_embedding])[0])
+    cluster = int(kmeans.predict(user_embedding_2d.astype(np.float64))[0])
 
-    # Get recommendation
-    recommendation = get_recommendation(skill_level)
+    recommendation = str(get_recommendation(skill_level))
 
     # Store in session
     if session_id not in sessions:
         sessions[session_id] = []
 
-    if svm_confidence > 0.3 and final_intent in intents:
+    if svm_confidence > 0.1 and final_intent in intents:
         response = intents[final_intent]["response"]
     else:
         response = "I'm sorry, I don't understand. Please try again. / Pasensya, wala ko kasabot. Palihug sulayi pag-usab."
